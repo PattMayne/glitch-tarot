@@ -2,7 +2,7 @@ import csfml
 import random
 
 
-var window = new_RenderWindow(video_mode(800, 600), "pɹıq ʎddılɟ")
+var window = new_RenderWindow(video_mode(800, 600), "Timely Tarot")
 window.vertical_sync_enabled = true
 
 let bird_texture = new_Texture("overlay.png")
