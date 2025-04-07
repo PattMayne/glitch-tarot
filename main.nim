@@ -19,17 +19,17 @@ bird.scale = vec2(0.7, 0.7)
 bird.position = vec2(window.size.x/3, window.size.y/2)
 
 var bg = new_Sprite(bg_texture)
-bg.scale = vec2(1.2, 1.2)
 bg.position = vec2(0, 0)
 
 var pentacle = new_Sprite(pentacle_texture)
-pentacle.origin = vec2(symbol_sz.x/2, symbol_sz.y/2)
-pentacle.scale = vec2(0.5, 0.5)
+let pent_scale: float = 0.25
+pentacle.scale = vec2(pent_scale, pent_scale)
+pentacle.origin = vec2((symbol_sz.x/2) * pent_scale, (symbol_sz.y/2) * pent_scale)
 
 randomize()
 let symbol_magnitude = rand(1..10)
-let spacing = int(bg_sz.x / symbol_magnitude)
-
+let spacing = int(window.size.x / (symbol_magnitude + 2))
+echo symbol_magnitude
 
 while window.open:
     var symbol_magnitude_count = 0
@@ -51,7 +51,12 @@ while window.open:
     window.draw bird
 
     while symbol_magnitude_count < symbol_magnitude:
-      pentacle.position = vec2(spacing * symbol_magnitude_count, 100)
+      if symbol_magnitude != 1:
+        let x_position = (spacing * symbol_magnitude_count) + spacing
+        pentacle.position = vec2(x_position, 100)
+      else:
+        pentacle.position = vec2(window.size.x / 2, 100)
+      
       window.draw pentacle
       symbol_magnitude_count += 1
 
