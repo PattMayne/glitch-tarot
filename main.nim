@@ -17,18 +17,31 @@ number_word_table[9] = "Nine"
 number_word_table[10] = "Ten"
 
 # Functions and Object Definitions
+# Some object may need description fields later too.
+
+type Background = object
+  name: string
+  path: string
 
 type Symbol = object
   name: string
   path: string
 
+
 type Point = object
   x: int
   y: int
 
+
+proc newBackground(newName, newPath: string): Background =
+  result.name = newName
+  result.path = newPath
+
+
 proc newPoint(newX, newY: int): Point = 
   result.x = newX
   result.y = newY
+
 
 proc newSymbol(newName, newPath: string): Symbol =
   result.name = newName
@@ -41,6 +54,7 @@ proc getCardTitle(num: int, symbol_text: string) : string =
     else: ""
   return_string = return_string & symbol_text
   return return_string
+
 
 # Create a seq of x,y coords where the Symbol objects should be printed.
 proc getSymbolPoints(number_of_points, screen_width:int): seq[Point] =
@@ -68,26 +82,35 @@ proc getSymbolPoints(number_of_points, screen_width:int): seq[Point] =
     let centre_point = newPoint(screen_center, 100)
     result.add(centre_point)
 
-let symbol_paths: array[4, Symbol] = [
+let symbols: array[4, Symbol] = [
   newSymbol("Pentacles", "symbol_pentacle.png"),
   newSymbol("Cups", "symbol_cup.png"),
   newSymbol("Guns", "symbol_gun.png"),
   newSymbol("Interfaces", "symbol_keyboard.png")
 ]
 
-let symbol: Symbol = symbol_paths[rand(0..len(symbol_paths) - 1)]
+let backgrounds: array[2, Background] = [
+  newBackground("Prepper Home", "bg_01.png"),
+  newBackground("Mountain", "bg_02.png")
+]
+
+let symbol: Symbol = symbols[rand(0..len(symbols) - 1)]
 let symbol_path : string = symbol.path
 
-var window = new_RenderWindow(video_mode(800, 600), "Timely Tarot")
-window.vertical_sync_enabled = true
+let background: Background = backgrounds[rand(0..len(backgrounds) - 1)]
+let background_path : string = background.path
 
 let bird_texture = new_Texture("overlay.png")
-let bg_texture = new_Texture("base.png")
+let bg_texture = new_Texture(background_path.cstring)
 let pentacle_texture = new_Texture(symbol_path.cstring)
 
 let bg_sz = bg_texture.size
 let sz = bird_texture.size
 let symbol_sz = pentacle_texture.size
+
+# Create the window with the size of the image.
+var window = new_RenderWindow(video_mode(bg_sz.x, bg_sz.y), "Timely Tarot")
+window.vertical_sync_enabled = true
 
 var bird = new_Sprite(bird_texture)
 bird.origin = vec2(sz.x/2, sz.y/2) # origin is where the image is anchored (anchor point)
