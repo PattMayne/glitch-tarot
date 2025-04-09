@@ -1,5 +1,26 @@
 import csfml
 import random
+import tables
+
+randomize()
+
+var number_word_table : Table[int, string]
+number_word_table[1] = "One"
+number_word_table[2] = "Two"
+number_word_table[3] = "Three"
+number_word_table[4] = "For"
+number_word_table[5] = "Five"
+number_word_table[6] = "Six"
+number_word_table[7] = "Seven"
+number_word_table[8] = "Eight"
+number_word_table[9] = "Nine"
+number_word_table[10] = "Ten"
+
+# Functions and Object Definitions
+
+type Symbol = object
+  name: string
+  path: string
 
 type Point = object
   x: int
@@ -9,7 +30,19 @@ proc newPoint(newX, newY: int): Point =
   result.x = newX
   result.y = newY
 
+proc newSymbol(newName, newPath: string): Symbol =
+  result.name = newName
+  result.path = newPath
 
+
+proc getCardTitle(num: int, symbol_text: string) : string =
+  var return_string: string = if num in number_word_table:
+    number_word_table[num] & " of "
+    else: ""
+  return_string = return_string & symbol_text
+  return return_string
+
+# Create a seq of x,y coords where the Symbol objects should be printed.
 proc getSymbolPoints(number_of_points, screen_width:int): seq[Point] =
   let is_even : bool = (number_of_points mod 2) == 0
   let number_of_pairs: int = number_of_points div 2
@@ -35,12 +68,22 @@ proc getSymbolPoints(number_of_points, screen_width:int): seq[Point] =
     let centre_point = newPoint(screen_center, 100)
     result.add(centre_point)
 
+let symbol_paths: array[4, Symbol] = [
+  newSymbol("Pentacles", "symbol_pentacle.png"),
+  newSymbol("Cups", "symbol_cup.png"),
+  newSymbol("Guns", "symbol_gun.png"),
+  newSymbol("Interfaces", "symbol_keyboard.png")
+]
+
+let symbol: Symbol = symbol_paths[rand(0..len(symbol_paths) - 1)]
+let symbol_path : string = symbol.path
+
 var window = new_RenderWindow(video_mode(800, 600), "Timely Tarot")
 window.vertical_sync_enabled = true
 
 let bird_texture = new_Texture("overlay.png")
 let bg_texture = new_Texture("base.png")
-let pentacle_texture = new_Texture("symbol_pentacle.png")
+let pentacle_texture = new_Texture(symbol_path.cstring)
 
 let bg_sz = bg_texture.size
 let sz = bird_texture.size
@@ -59,12 +102,10 @@ var pentacle = new_Sprite(pentacle_texture)
 let pent_scale: float = 0.25
 pentacle.scale = vec2(pent_scale, pent_scale)
 pentacle.origin = vec2((float(symbol_sz.x) / 2), 0)
-echo "pentacle x:"
-echo pentacle.origin.x
-
-randomize()
 let symbol_magnitude = rand(1..10)
-echo symbol_magnitude
+
+let card_title: string = getCardTitle(symbol_magnitude, symbol.name)
+echo card_title
 
 # make the 
 let symbol_points: seq[Point] = getSymbolPoints(symbol_magnitude, window.size.x)
