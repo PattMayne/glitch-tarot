@@ -167,3 +167,8 @@ bg_texture.destroy()
 pentacle.destroy()
 pentacle_texture.destroy()
 window.destroy()
+
+
+# NEXT
+# Write the text with newText
+# newText* (str: string, font: Font, characterSize = 30) (it's a pointer... and where do I get the font?)
